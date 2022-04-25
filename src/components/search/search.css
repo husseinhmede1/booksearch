@@ -1,0 +1,39 @@
+    .searchTable{
+        box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
+    }
+    .searchTableHead{
+        background-color: rgb(226, 134, 28);
+        color: white;
+    }
+    .searchInput{
+        width: 100%;
+        border: 1px solid #ccc;
+        border-color: rgb(226, 134, 28);
+    }
+    .searchInput:focus{
+        border: 3px solid #ccc;
+        border-color: rgb(226, 179, 124);
+        box-shadow: 0 1px 1px rgb(255, 255, 255) inset, 0 0 8px rgba(78, 75, 75, 0.6);
+    }
+    .searchLogout{
+        position: absolute;
+        left: 83%;
+    }
+    .searchInputPosition{
+        margin-top: 4%;
+    }
+
+    .searchTablePosition{
+      margin-top: 1%;
+    }
+    .modalSearch{
+      position:fixed;
+      top: 30%;
+      left: 30%;
+      z-index: 1;
+    }
+    .spinnerSearch{
+        position: absolute;
+        left: 48.5%;
+        top: 40%;
+    }

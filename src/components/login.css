@@ -1,0 +1,82 @@
+    .loginButton{
+        width: 60%;
+        margin-left: 20.4%;
+        margin-top: 10%;
+    }
+    .googleIcon{
+        margin-left: 31%;
+        margin-top: 3%;
+    }
+    .loginTitle{
+        font-size: 2.5vw;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        position:absolute;
+        top: 10%;
+        left: 42.5%;
+        color: rgb(83, 83, 83);
+    }
+    .loginDescription{
+        margin-left: 24%;
+        margin-top: 5%;
+        font-size: 1.5vw;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        color: rgb(83, 83, 83);
+    }
+    .loginBox{
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: space-evenly;
+        align-items: stretch;
+        align-content: stretch; 
+        position:absolute;
+        top: 27%;
+        left: 30%;
+        opacity: 1;
+        width:40%;
+        height:50vh;
+        white-space: nowrap;
+        z-index: 1;
+        box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 2%;
+        background-color:rgb(248, 245, 245);
+    }
+
+@media screen and (max-width: 700px) {
+    .googleIcon{
+        margin-left: 40%;
+        margin-top: 3%;
+    }
+    .loginTitle{
+        font-size: 6vw;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        position:absolute;
+        top: 5%;
+        left: 32%;
+        color: rgb(83, 83, 83);
+    }
+    .loginDescription{
+        margin-left: 21.6%;
+        margin-top: 5%;
+        font-size: 3vw;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        color: rgb(83, 83, 83);
+    }
+    .loginBox{
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: space-evenly;
+        align-items: stretch;
+        align-content: stretch; 
+        position:absolute;
+        top: 20%;
+        left: 12.7%;
+        opacity: 1;
+        width:75%;
+        height:70vh;
+        white-space: nowrap;
+        z-index: 1;
+        box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 2%;
+        background-color:rgb(248, 245, 245);
+    }   
+}

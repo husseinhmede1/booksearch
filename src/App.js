@@ -1,24 +1,34 @@
-import logo from './logo.svg';
+import { useEffect } from 'react';
+import { BrowserRouter,Route, Routes } from "react-router-dom";
+import { gapi } from 'gapi-script';
 import './App.css';
+import Login from "./components/login";
+import Search from './components/search/search';
+
+const client_id =  '358597847515-pl4k0o9dj1hbb53tsifknsa7e560ci3j.apps.googleusercontent.com';
 
 function App() {
+
+  useEffect(() => {
+    function start() {
+      gapi.client.init({
+        clientId: client_id,
+        scope: "" 
+      })
+    };
+    gapi.load('client:auth2', start);
+  });
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  <div className="App">
+    <BrowserRouter>
+       <Routes>
+          <Route exact path="/" element= {<Login/>}/>
+          <Route exact path="/search" element= {<Search/>}/>
+        </Routes>
+    </BrowserRouter>
+  </div>
   );
 }
 
