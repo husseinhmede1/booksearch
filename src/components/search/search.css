@@ -1,18 +1,18 @@
     .searchTable{
-        box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 0px 5px 5px rgb(253, 194, 104);
     }
     .searchTableHead{
-        background-color: rgb(226, 134, 28);
+        background-color: rgb(253, 194, 104);
         color: white;
     }
     .searchInput{
         width: 100%;
         border: 1px solid #ccc;
-        border-color: rgb(226, 134, 28);
+        border-color: rgb(253, 194, 104);
     }
     .searchInput:focus{
         border: 3px solid #ccc;
-        border-color: rgb(226, 179, 124);
+        border-color: rgb(253, 194, 104);
         box-shadow: 0 1px 1px rgb(255, 255, 255) inset, 0 0 8px rgba(78, 75, 75, 0.6);
     }
     .searchLogout{
@@ -36,4 +36,10 @@
         position: absolute;
         left: 48.5%;
         top: 40%;
+    }
+    .searchIcon{
+        position: absolute;
+        left: 45%;
+        top: 40%;
+        opacity: 0.5;
     }
