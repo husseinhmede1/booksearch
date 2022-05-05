@@ -10,6 +10,19 @@
         border: 1px solid #ccc;
         border-color: rgb(253, 194, 104);
     }
+    .paginationColor{
+        border: 1px solid rgb(253, 194, 104);
+        border-color: rgb(253, 194, 104);
+    }
+    .paginationArrow{
+        color:  rgb(253, 177, 62);
+        height: 3.5vh;
+    }
+    .paginationText{
+        color:  rgb(252, 152, 2);
+        height: 1.4vh;
+    }
+
     .searchInput:focus{
         border: 3px solid #ccc;
         border-color: rgb(253, 194, 104);

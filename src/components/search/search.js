@@ -1,78 +1,35 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 import { gapi } from 'gapi-script';
-import { Table, Container, Row, Col, Form, Dropdown, Button, Modal, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Form, Dropdown, Button, Spinner, Pagination } from 'react-bootstrap';
+import { BsFillArrowLeftCircleFill, BsFillArrowRightCircleFill } from "react-icons/bs";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './search.css';
 import LogoutButton from "../logout";
+import { search, paginate, searchBack } from '../../utils/services.js';
 import searchIcon from '../../assets/svg/searchIcon.svg';
 
 const Search = () => {
   const navigate = useNavigate();
   const [books,setBooks] = useState();
-  const [bookDetails,setBookDetails] = useState();
-  const [bookId,setBookId] = useState();
+  const [bookName,setBookName] = useState();
   const [isLoading,setLoading] = useState(false);
+  const [totalItems, setTotalItems] = useState();
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     //not signedin
     if(gapi.auth === undefined)
-    navigate("/");
-  }, []);
-
-  const search = (search) => {
-    //search is empty
-    if(search.target.value === '')
-    {
-      setBooks();
-      setLoading(false);
-      return;
+    {  navigate("/");
     }
-    //get Token
-      var accessToken = gapi.auth.getToken().access_token;
-      setLoading(true);
-    //get the books with free ebooks specification starting with the newest books first
-    axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=${search.target.value}&orderBy=newest&filter=free-ebooks&&maxResults=40`,
-        {
-        headers: {
-          'Authorization': `${accessToken}`
-        }
+    else{
+      if(localStorage.getItem('search') !== '')
+      {
+        searchBack(localStorage.getItem('search'), setBookName, setBooks, setLoading, setTotalItems, setCurrentPage)
       }
-    ).then(res => {
-      setBooks(res.data.items);
-      setLoading(false);
-    })
-    .catch(err =>{
-      console.log(err)
-    })
-
-  }
-
-  function getSingleBook (id)  {
-    var accessToken = gapi.auth.getToken().access_token;
-    
-    //get the books with free ebooks specification starting with the newest books first
-    axios.get(
-      `https://www.googleapis.com/books/v1/volumes/${id}`,
-        {
-        headers: {
-          'Authorization': `${accessToken}`
-        }
-      }
-    ).then(res => {
-        setBookDetails(res.data);
-        setBookId(id)
-      })
-    .catch(err =>{
-      console.log(err)
-    })
-  }
-    function preview(previewLink){
-      window.open(previewLink);
-    }
+    }  
+    }, []);
 
   return (
   <div>
@@ -81,7 +38,7 @@ const Search = () => {
         <Col>
           <Form>
             <Form.Group>
-              <Form.Control placeholder="Search as you type..." className='searchInput' onKeyUp={(e) =>search(e)}/>
+              <Form.Control placeholder="Search as you type..." defaultValue={bookName} className='searchInput' onKeyUp={(e) =>search(e, setBookName, setBooks, setLoading, setTotalItems, setCurrentPage)}/>
             </Form.Group>
           </Form>
         </Col>
@@ -94,12 +51,29 @@ const Search = () => {
         (
         <div>
           <img src={searchIcon} alt="icon" className='searchIcon' style={{width: '10vw', height: '10vh'}}/>
-        </div> 
+        </div>
         )
      }
      { 
      books &&
        (
+        <Col>
+        <Row style={{marginTop: '3%', marginBottom: '-1%', marginLeft: '0%'}}>
+        <Pagination>
+          {currentPage > 0 && 
+          (
+            <Pagination.Item className='paginationColor' onClick={(e) => {setCurrentPage(currentPage - 1)}}><BsFillArrowLeftCircleFill className='paginationArrow'/></Pagination.Item>
+          )}
+          <Pagination.Item className='paginationColor' onClick={(e) => {paginate(bookName, currentPage, totalItems, setBooks, setLoading)}}><p className='paginationText'>{currentPage}</p></Pagination.Item>
+          <Pagination.Item className='paginationColor' onClick={(e) => {paginate(bookName, currentPage + 1, totalItems, setBooks, setLoading)}}><p className='paginationText'>{currentPage + 1}</p></Pagination.Item>
+          <Pagination.Item className='paginationColor' onClick={(e) => {paginate(bookName, currentPage + 2, totalItems, setBooks, setLoading)}}><p className='paginationText'>{currentPage + 2}</p></Pagination.Item>
+          {currentPage + 2 <  totalItems /40 - 1  && 
+          (
+            <Pagination.Item className='paginationColor' onClick={(e) => {setCurrentPage(currentPage + 1)}}><BsFillArrowRightCircleFill className='paginationArrow'/></Pagination.Item>
+          )}
+          </Pagination>
+      </Row>
+
         <Row className='searchTablePosition'>
          <Col>
           <div className='searchTable' style={{width: '100%'}}>
@@ -113,8 +87,8 @@ const Search = () => {
                         <Col style={{display: 'flex', justifyContent: 'center'}}>
                         {
                          book.volumeInfo.imageLinks &&(
-                          <div style={{marginTop: '5%'}}>
-                            <img src= {book.volumeInfo.imageLinks.thumbnail} style ={{width: '100%', height: '90%', borderRadius:'10% '}} alt=''/>
+                          <div style={{marginTop: '5%', marginBottom: '4%'}}>
+                            <img src= {book.volumeInfo.imageLinks.thumbnail} style ={{width: '100%', height: '30vh', borderRadius: '10% '}} alt=''/>
                           </div>
                         )}
                        </Col>
@@ -163,139 +137,20 @@ const Search = () => {
 
                         </Row>
 
-                          <Row style={{marginTop: '5%'}}>
+                          <Row style={{marginTop: '5%', marginBottom: '8%'}}>
                             <Col style={{display: 'flex', justifyContent: 'center'}}>
-                              <Button variant="warning" onClick={() =>{ getSingleBook(book.id)}} style={{color: 'white', width: '80%'}}>Info</Button>
+                              <Button variant="warning" onClick={() =>{ navigate(`/info/${book.id}`)}} style={{color: 'white', width: '80%'}}>Info</Button>
                             </Col>
                           </Row>
-                          <Row style={{marginBottom: '15%'}}>
-                            <Col style={{display: 'flex', justifyContent: 'center'}}>
-                              <Button variant="secondary" onClick={() =>{ preview(book.volumeInfo.previewLink)}} style={{color: 'white', width: '80%', marginTop: '5%'}} >Preview</Button>
-                            </Col>
-                          </Row>
-                            <Row>
-                        {
-                          book.id === bookId && bookDetails && 
-                          (
-                            <Col style={{display: 'flex', justifyContent: 'center'}}>
-                            <Modal.Dialog style={{width: '80%'}}>
-                                <Modal.Header style={{width: '100%'}}>
-                                  <Modal.Title style={{width: '100%'}}>Info</Modal.Title>
-                                </Modal.Header>
-                              <Modal.Body style={{width: '100%'}}>
-                                {
-                                bookDetails.volumeInfo.averageRating > 0 && bookDetails.volumeInfo.averageRating <= 1 &&
-                                <div>
-                                  <i style={{color:'yellow'}} className="fa fa-star"></i> 
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <p> {bookDetails.volumeInfo.ratingsCount} rate</p>
-                                </div>
-                                }
-                                
-                                {
-                                bookDetails.volumeInfo.averageRating > 1 && bookDetails.volumeInfo.averageRating <= 2 &&
-                                  <div>   
-                                    <i style={{color:'yellow'}} className="fa fa-star"></i> 
-                                    <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <p> {bookDetails.volumeInfo.ratingsCount} rate</p>
-                                  </div>
-                                }
-                                
-                                {
-                                bookDetails.volumeInfo.averageRating > 2 && bookDetails.volumeInfo.averageRating <= 3 &&
-                                  <div>                              
-                                    <i style={{color:'yellow'}} className="fa fa-star"></i> 
-                                    <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                    <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <p> {bookDetails.volumeInfo.ratingsCount} rate</p>
-                                  </div>
-                                }
-                                
-                                {
-                                bookDetails.volumeInfo.averageRating > 3 && bookDetails.volumeInfo.averageRating <= 4 &&
-                                  <div>                              
-                                    <i style={{color:'yellow'}} className="fa fa-star"></i> 
-                                    <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                    <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                    <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <p> {bookDetails.volumeInfo.ratingsCount} rate</p>
-                                  </div>
-                                }
-                                
-                                {
-                                bookDetails.volumeInfo.averageRating > 4  &&
-                                <div>   
-                                  <i style={{color:'yellow'}} className="fa fa-star"></i> 
-                                  <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                  <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                  <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                  <i style={{color:'yellow'}} className="fa fa-star"></i>
-                                  <p> {bookDetails.volumeInfo.ratingsCount} rate</p>
-                                </div>
-                                }
-                                
-                                {
-                                !bookDetails.volumeInfo.ratingsCount &&
-                                  <p>No rating on this book.</p>
-                                }
-                                  <div>
-                                    <span><b>Title:</b></span><p>{bookDetails.volumeInfo.title}</p>
-                                    <span><b>PageCount:</b></span><p>{bookDetails.volumeInfo.pageCount}</p>
-                                    <span><b>Publisher:</b></span><p>{bookDetails.volumeInfo.publisher}</p>
-                                    <span><b>Language:</b></span><p>{bookDetails.volumeInfo.language}</p>
-                                    <Row>
-                              {
-                                book.accessInfo.epub.downloadLink !== undefined &&
-                                (
-                                  <a href={book.accessInfo.epub.downloadLink}><u>Download epub</u></a>
-                                )
-                              }
-                              {
-                                book.accessInfo.epub.downloadLink === undefined &&
-                                  (
-                                    <p>epub is not availble</p>
-                                  )
-                              }
-                            </Row>
-                            <Row>
-                              {
-                                book.accessInfo.pdf.downloadLink !== undefined &&
-                                (
-                                  <a href={book.accessInfo.pdf.downloadLink}><u>Download pdf</u></a>
-                                )
-                              }
-                              {
-                                book.accessInfo.pdf.downloadLink === undefined &&
-                                (
-                                  <p>pdf is not availble</p>
-                                )
-                              }
-                            </Row>
-
-                                    </div>
-                                </Modal.Body>
-                              </Modal.Dialog>
-                            </Col>
-                          )}
-                        </Row>
                       </div>
                     </Col>
                       )
                    })}
                  </Row>
-
                 </div>
               </Col>
             </Row>
+            </Col>
               )}
     </Container>
      {

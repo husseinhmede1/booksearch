@@ -23,7 +23,7 @@ function Login() {
   <>
     <span className='loginTitle'>
       Book Search
-    </span>
+    </span> 
     <div id="signInButton" className='loginBox'>    
       <div>
         <img src={googleIcon} alt="icon" className='googleIcon' style={{width: '15vw', height: '15vh'}}/>
